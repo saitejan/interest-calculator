@@ -213,7 +213,7 @@ class Details extends Component {
                                     <th>Name</th>
                                     <th>Amount</th>
                                     <th>Interest Rate</th>
-                                    <th>Date</th>
+                                    <th>Date (YYYY-MM-DD)</th>
                                     <th>Interest Value</th>
                                     <th>Description</th>
                                     <th>Actions</th>
