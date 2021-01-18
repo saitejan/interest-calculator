@@ -64,7 +64,7 @@ class Details extends Component {
 
     componentDidMount() {
         const tkn = localStorage.token
-        if (tkn && tkn != "false") {
+        if (tkn && tkn !== "false") {
             if (localStorage.loginType === 'Local') {
                 let txns = JSON.parse(localStorage[tkn]).data || []
                 this.setState({
