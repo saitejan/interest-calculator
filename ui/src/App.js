@@ -64,7 +64,7 @@ class App extends Component {
 
 
   componentDidMount() {
-    if (localStorage.token && localStorage.token != "false") {
+    if (localStorage.token && localStorage.token !== "false") {
       if (localStorage.role !== "admin") {
         this.props.history.push('/details');
       } else {
