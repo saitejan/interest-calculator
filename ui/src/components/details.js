@@ -34,7 +34,7 @@ class Details extends Component {
         let dts = d2.getDate() - d1.getDate()
         if (dts < 0) {
             months -= 1;
-            dts = 30+dts
+            dts = 30 + dts
         }
         months += dts / 30
         interest = txn.amount * (txn.interest / 100) * months
@@ -111,10 +111,47 @@ class Details extends Component {
         this.setState({ show: true, user: { name: "", interest: "", amount: 0, date: '' } })
     }
 
+
+    import = () => {
+
+    }
+
+    export = () => {
+        let filename = localStorage.token + " " + new Date().toDateString() + ".csv"
+        var csv = [];
+        var rows = document.querySelectorAll("table#exportTable tr");
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("td, th");
+            for (var j = 0; j < cols.length - 1; j++) {
+                var tempText = cols[j]['innerText'].replace(',', '');
+                row.push(tempText);
+            }
+            csv.push(row.join(","));
+        }
+
+        csv = csv.join("\n")
+        var csvFile;
+        var downloadLink;
+        // CSV file
+        csvFile = new Blob([csv], { type: "text/csv" });
+        // Download link
+        downloadLink = document.createElement("a");
+        // File name
+        downloadLink.download = filename;
+        // Create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        // Hide download link
+        downloadLink.style.display = "none";
+        // Add the link to DOM
+        document.body.appendChild(downloadLink);
+        // Click download link
+        downloadLink.click();
+    }
+
     cleared = index => {
         let tkn = localStorage.token
         let txns = JSON.parse(localStorage[tkn])
-        txns.data.splice(index,1)
+        txns.data.splice(index, 1)
         localStorage[tkn] = JSON.stringify(txns);
         this.setState({
             txns: txns.data
@@ -163,12 +200,14 @@ class Details extends Component {
                         <div>
                             {localStorage.role === "admin" ? (<Button variant="info" onClick={this.goBack}>Back</Button>) : ""}
                             <Button variant="primary" onClick={this.Add}>Add Transaction</Button>
+                            <Button variant="primary" onClick={this.export}>Export</Button>
+                            {/* <Button variant="primary" onClick={this.import}>Import</Button> */}
                             {localStorage.role !== "admin" ? (<Button variant="danger" onClick={this.logOut}>Log Out</Button>) : ""}
                         </div>
                     </Row>
 
                     <div>
-                        <Table responsive striped bordered hover>
+                        <Table id="exportTable" responsive striped bordered hover>
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -181,7 +220,7 @@ class Details extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.txns ? this.state.txns.map((txn,i) => <tr>
+                                {this.state.txns ? this.state.txns.map((txn, i) => <tr>
                                     <td>{txn.name}</td>
                                     <td>{txn.amount}</td>
                                     <td>{txn.interest}</td>
@@ -189,7 +228,7 @@ class Details extends Component {
                                     <td>{this.calculateInterest(txn)}</td>
                                     <td>{txn.desc}</td>
                                     <td>
-                            <Button variant="primary" onClick={()=>this.cleared(i)}>Cleared</Button>
+                                        <Button variant="primary" onClick={() => this.cleared(i)}>Cleared</Button>
                                     </td>
                                 </tr>) : null}
                             </tbody>
