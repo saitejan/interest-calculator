@@ -1,0 +1,35 @@
+{
+  "short_name": "Interest",
+  "name": "Interest Calculator",
+  "icons": [
+    {
+      "src": "note16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "note48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "note128.png",
+      "type": "image/png",
+      "sizes": "128x128"
+    },
+    {
+      "src": "note256.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "note540.png",
+      "type": "image/png",
+      "sizes": "540x540"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

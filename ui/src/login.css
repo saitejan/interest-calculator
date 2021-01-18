@@ -1,0 +1,15 @@
+.Login {
+  display: flex;
+  justify-content: center;
+  margin-top: 20%;
+  height: 100%;
+}
+
+.loginDiv {
+  display: flex;
+  justify-content: space-between;
+}
+
+.loginForm {
+  width: 80%;
+}
