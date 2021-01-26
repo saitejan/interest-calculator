@@ -24,21 +24,33 @@ class Details extends Component {
     }
 
 
-    calculateInterest = txn => {
-        let interest = 0;
-        let months;
-        let d1 = new Date(txn.date), d2 = new Date();
-        months = (d2.getFullYear() - d1.getFullYear()) * 12;
-        months -= d1.getMonth();
-        months += d2.getMonth();
-        let dts = d2.getDate() - d1.getDate()
-        if (dts < 0) {
-            months -= 1;
-            dts = 30 + dts
+    calculateInterest = (txns, needtotals) => {
+        let totalAmount = 0, totalInterest = 0;
+        txns = txns.map(txn => {
+            let interest = 0;
+            let months;
+            let d1 = new Date(txn.date), d2 = new Date();
+            months = (d2.getFullYear() - d1.getFullYear()) * 12;
+            months -= d1.getMonth();
+            months += d2.getMonth();
+            let dts = d2.getDate() - d1.getDate()
+            if (dts < 0) {
+                months -= 1;
+                dts = 30 + dts
+            }
+            months += dts / 30
+            interest = txn.amount * (txn.interest / 100) * months
+            txn.interestValue = interest
+            totalAmount += txn.amount
+            totalInterest += interest
+            return txn;
+        })
+        if (!needtotals) return txns;
+        return {
+            txns,
+            totalAmount,
+            totalInterest
         }
-        months += dts / 30
-        interest = txn.amount * (txn.interest / 100) * months
-        return interest;
     }
 
     getUsers = async () => {
@@ -66,9 +78,16 @@ class Details extends Component {
         const tkn = localStorage.token
         if (tkn && tkn !== "false") {
             if (localStorage.loginType === 'Local') {
-                let txns = JSON.parse(localStorage[tkn]).data || []
+                let localData = JSON.parse(localStorage[tkn])
+                let txns = localData.data || []
+                const resp = this.calculateInterest(txns, 1)
+                txns = resp.txns
+                localData.data = txns
+                localStorage[tkn] = JSON.stringify(localData)
                 this.setState({
-                    txns
+                    txns,
+                    totalAmount: resp.totalAmount,
+                    totalInterest: resp.totalInterest
                 })
             } else {
                 // for cloud
@@ -108,7 +127,7 @@ class Details extends Component {
     }
 
     Add = () => {
-        this.setState({ show: true, user: { name: "", interest: "", amount: 0, date: '' } })
+        this.setState({ show: true, txn: { name: "", interest: "", amount: 0, date: '' } })
     }
 
 
@@ -152,8 +171,12 @@ class Details extends Component {
         let tkn = localStorage.token
         let txns = JSON.parse(localStorage[tkn])
         txns.data.splice(index, 1)
+        let resp = this.calculateInterest(txns.data, 1)
+        txns.data = resp.txns
         localStorage[tkn] = JSON.stringify(txns);
         this.setState({
+            totalAmount: resp.totalAmount,
+            totalInterest: resp.totalInterest,
             txns: txns.data
         })
     }
@@ -166,10 +189,15 @@ class Details extends Component {
         let tkn = localStorage.token
         let txns = JSON.parse(localStorage[tkn])
         txns.data.push(txn)
+        let resp = this.calculateInterest(txns.data, 1)
+        txns.data = resp.txns
         localStorage[tkn] = JSON.stringify(txns);
         this.setState({
-            txns: txns.data
+            totalAmount: resp.totalAmount,
+            totalInterest: resp.totalInterest,
+            txns: txns.data, show: false, txn: { name: "", interest: "", amount: 0, date: '' }
         })
+
 
         // const response = await axios({
         //     method: "POST",
@@ -225,12 +253,21 @@ class Details extends Component {
                                     <td>{txn.amount}</td>
                                     <td>{txn.interest}</td>
                                     <td>{txn.date}</td>
-                                    <td>{this.calculateInterest(txn)}</td>
+                                    <td>{txn.interestValue}</td>
                                     <td>{txn.desc}</td>
                                     <td>
                                         <Button variant="primary" onClick={() => this.cleared(i)}>Cleared</Button>
                                     </td>
                                 </tr>) : null}
+                                <tr>
+                                    <td>Total</td>
+                                    <td>{this.state.totalAmount}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>{this.state.totalInterest}</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
                             </tbody>
                         </Table>
                     </div>
