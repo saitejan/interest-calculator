@@ -15,6 +15,7 @@ class Details extends Component {
             txns: [],
             txn: {},
             show: false,
+            editIndex: 0,
 
         }
     }
@@ -126,8 +127,13 @@ class Details extends Component {
         return this.state.txn.name.length > 0 && this.state.txn.amount > 0 && this.state.txn.interest && this.state.txn.date;
     }
 
+
+    edit = (i) => {
+        this.setState({ show: 'Edit', editIndex: i, txn: { ...this.state.txns[i] } })
+    }
+
     Add = () => {
-        this.setState({ show: true, txn: { name: "", interest: "", amount: 0, date: '' } })
+        this.setState({ show: 'Add', txn: { name: "", interest: "", amount: 0, date: '' } })
     }
 
 
@@ -188,7 +194,9 @@ class Details extends Component {
         txn.amount = Number(txn.amount)
         let tkn = localStorage.token
         let txns = JSON.parse(localStorage[tkn])
-        txns.data.push(txn)
+        if (this.state.show === 'Edit') {
+            txns.data[this.state.editIndex] = txn;
+        } else txns.data.push(txn)
         let resp = this.calculateInterest(txns.data, 1)
         txns.data = resp.txns
         localStorage[tkn] = JSON.stringify(txns);
@@ -256,6 +264,7 @@ class Details extends Component {
                                     <td>{txn.interestValue}</td>
                                     <td>{txn.desc}</td>
                                     <td>
+                                        <Button variant="primary" onClick={() => this.edit(i)}>Edit</Button>
                                         <Button variant="primary" onClick={() => this.cleared(i)}>Cleared</Button>
                                     </td>
                                 </tr>) : null}
@@ -283,7 +292,7 @@ class Details extends Component {
                 >
                     <Modal.Header closeButton>
                         <Modal.Title id="contained-modal-title-vcenter">
-                            Add Transaction
+                            {this.state.show} Transaction
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
