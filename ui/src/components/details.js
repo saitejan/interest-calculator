@@ -27,7 +27,7 @@ class Details extends Component {
 
 
     calculateInterest = (txns, needtotals) => {
-        let totalAmount = 0, totalInterest = 0;
+        let totalAmount = 0, totalInterest = 0, totalInterestPerDay = 0;
         txns = txns.map(txn => {
             let interest = 0;
             let interestPerDay = 0;
