@@ -29,6 +29,7 @@ class Details extends Component {
         let totalAmount = 0, totalInterest = 0;
         txns = txns.map(txn => {
             let interest = 0;
+            let interestPerDay = 0;
             let months;
             let d1 = new Date(txn.date), d2 = new Date();
             months = (d2.getFullYear() - d1.getFullYear()) * 12;
@@ -40,13 +41,21 @@ class Details extends Component {
                 dts = 30 + dts
             }
             months += dts / 30
+            interestPerDay = txn.amount * (txn.interest / 100) * (1 / 30)
             interest = txn.amount * (txn.interest / 100) * months
+
+            interest = interest % 1 !== 0 ? interest.toFixed(2) : interest
+            interestPerDay = interestPerDay % 1 !== 0 ? interestPerDay.toFixed(2) : interestPerDay
+            txn.interestPerDay = interestPerDay
             txn.interestValue = interest
             totalAmount += txn.amount
             totalInterest += interest
             return txn;
         })
         if (!needtotals) return txns;
+        totalAmount = totalAmount % 1 !== 0 ? totalAmount.toFixed(2) : totalAmount
+        totalInterest = totalInterest % 1 !== 0 ? totalInterest.toFixed(2) : totalInterest
+
         return {
             txns,
             totalAmount,
@@ -248,10 +257,11 @@ class Details extends Component {
                                 <tr>
                                     <th>Name</th>
                                     <th>Amount</th>
-                                    <th>Interest Rate</th>
-                                    <th>Date (YYYY-MM-DD)</th>
-                                    <th>Interest Value</th>
-                                    <th>Description</th>
+                                    <th>IRate</th>
+                                    <th>Date</th>
+                                    <th>IValue</th>
+                                    <th>IPerDay</th>
+                                    <th>Desc</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -261,7 +271,8 @@ class Details extends Component {
                                     <td>{txn.amount}</td>
                                     <td>{txn.interest}</td>
                                     <td>{txn.date}</td>
-                                    <td>{txn.interestValue}</td>
+                                    <td>{txn.interestValue | 0}</td>
+                                    <td>{txn.interestPerDay | 0}</td>
                                     <td>{txn.desc}</td>
                                     <td>
                                         <Button variant="primary" onClick={() => this.edit(i)}>Edit</Button>
