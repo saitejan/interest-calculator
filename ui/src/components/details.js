@@ -53,8 +53,8 @@ class Details extends Component {
             return txn;
         })
         if (!needtotals) return txns;
-        totalAmount = totalAmount % 1 !== 0 ? totalAmount.toFixed(2) : totalAmount
-        totalInterest = totalInterest % 1 !== 0 ? totalInterest.toFixed(2) : totalInterest
+        totalAmount = +(totalAmount % 1 !== 0 ? totalAmount.toFixed(2) : totalAmount)
+        totalInterest = +(totalInterest % 1 !== 0 ? totalInterest.toFixed(2) : totalInterest)
 
         return {
             txns,
