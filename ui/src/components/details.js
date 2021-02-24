@@ -271,8 +271,8 @@ class Details extends Component {
                                     <td>{txn.amount}</td>
                                     <td>{txn.interest}</td>
                                     <td>{txn.date}</td>
-                                    <td>{txn.interestValue | 0}</td>
-                                    <td>{txn.interestPerDay | 0}</td>
+                                    <td>{txn.interestValue}</td>
+                                    <td>{txn.interestPerDay}</td>
                                     <td>{txn.desc}</td>
                                     <td>
                                         <Button variant="primary" onClick={() => this.edit(i)}>Edit</Button>
