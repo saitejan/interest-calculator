@@ -16,6 +16,7 @@ class Details extends Component {
             txn: {},
             show: false,
             editIndex: 0,
+            totalInterestPerDay: 0
 
         }
     }
@@ -48,6 +49,7 @@ class Details extends Component {
             interestPerDay = +(interestPerDay % 1 !== 0 ? interestPerDay.toFixed(2) : interestPerDay)
             txn.interestPerDay = interestPerDay
             txn.interestValue = interest
+            totalInterestPerDay += interestPerDay
             totalAmount += txn.amount
             totalInterest += interest
             return txn;
@@ -55,11 +57,13 @@ class Details extends Component {
         if (!needtotals) return txns;
         totalAmount = +(totalAmount % 1 !== 0 ? totalAmount.toFixed(2) : totalAmount)
         totalInterest = +(totalInterest % 1 !== 0 ? totalInterest.toFixed(2) : totalInterest)
+        totalInterestPerDay = +(totalInterestPerDay % 1 !== 0 ? totalInterestPerDay.toFixed(2) : totalInterestPerDay)
 
         return {
             txns,
             totalAmount,
-            totalInterest
+            totalInterest,
+            totalInterestPerDay
         }
     }
 
@@ -97,7 +101,8 @@ class Details extends Component {
                 this.setState({
                     txns,
                     totalAmount: resp.totalAmount,
-                    totalInterest: resp.totalInterest
+                    totalInterestPerDay: resp.totalInterestPerDay,
+                    totalInterest: resp.totalInterest,
                 })
             } else {
                 // for cloud
@@ -192,6 +197,7 @@ class Details extends Component {
         this.setState({
             totalAmount: resp.totalAmount,
             totalInterest: resp.totalInterest,
+            totalInterestPerDay: resp.totalInterestPerDay,
             txns: txns.data
         })
     }
@@ -212,6 +218,7 @@ class Details extends Component {
         this.setState({
             totalAmount: resp.totalAmount,
             totalInterest: resp.totalInterest,
+            totalInterestPerDay: resp.totalInterestPerDay,
             txns: txns.data, show: false, txn: { name: "", interest: "", amount: 0, date: '' }
         })
 
@@ -285,7 +292,7 @@ class Details extends Component {
                                     <td>-</td>
                                     <td>-</td>
                                     <td>{this.state.totalInterest}</td>
-                                    <td>-</td>
+                                    <td>{this.state.totalInterestPerDay}</td>
                                     <td>-</td>
                                 </tr>
                             </tbody>
