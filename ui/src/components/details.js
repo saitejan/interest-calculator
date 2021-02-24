@@ -41,8 +41,8 @@ class Details extends Component {
                 dts = 30 + dts
             }
             months += dts / 30
-            interestPerDay = txn.amount * (txn.interest / 100) * (1 / 30)
-            interest = txn.amount * (txn.interest / 100) * months
+            interestPerDay = +(txn.amount * (txn.interest / 100) * (1 / 30))
+            interest = +(txn.amount * (txn.interest / 100) * months)
 
             interest = interest % 1 !== 0 ? interest.toFixed(2) : interest
             interestPerDay = interestPerDay % 1 !== 0 ? interestPerDay.toFixed(2) : interestPerDay
