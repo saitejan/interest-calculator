@@ -188,6 +188,8 @@ class Details extends Component {
     }
 
     cleared = index => {
+        let vl = window.confirm('Do you really want to clear')
+        if(!vl) return;
         let tkn = localStorage.token
         let txns = JSON.parse(localStorage[tkn])
         txns.data.splice(index, 1)
