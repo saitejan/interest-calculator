@@ -13,36 +13,39 @@ class App extends Component {
       password: "",
       lname: "",
       lpassword: "",
-      localorcloud:"Local",
-      loginorsignup:1,
+      localorcloud: "Cloud",
+      loginorsignup: 0,
       localorcloudmap: {
-        "Local":"Cloud",
-        "Cloud":"Local",
+        "Local": "Cloud",
+        "Cloud": "Local",
       }
     }
   }
 
-  localSave =() => {
-    let {lname,lpassword} = this.state
-    if(!lname) return alert('Account Name is required')
+  localSave = () => {
+    let { lname, lpassword } = this.state
+    if (!lname) return alert('Account Name is required')
     else if (!lpassword) return alert('Password is required')
-    if(localStorage[lname]) {
+    if (localStorage[lname]) {
       return alert('Account Already Exists')
     }
-    localStorage[lname] = JSON.stringify({password:lpassword,data:[]})
-    this.setState({loginorsignup:!this.state.loginorsignup,lname:"",lpassword:""});
+    localStorage[lname] = JSON.stringify({ password: lpassword, data: [] })
+    this.setState({ loginorsignup: !this.state.loginorsignup, lname: "", lpassword: "" });
+    localStorage.loginType = 'Local';
+    localStorage.token = lname;
+    this.props.history.push('/details');
   }
 
   switchToSignUp = () => {
     let loginorsignup = !this.state.loginorsignup
-    return this.setState({loginorsignup,lname:"",lpassword:""});
+    return this.setState({ loginorsignup, lname: "", lpassword: "" });
   }
 
   localLogin = () => {
-    let {lname,lpassword} = this.state
-    if(!lname) return alert('Name is required')
+    let { lname, lpassword } = this.state
+    if (!lname) return alert('Name is required')
     else if (!lpassword) return alert('Password is required')
-    if(!localStorage[lname]) {
+    if (!localStorage[lname]) {
       return alert('Account Doesn\'t Exists')
     }
     localStorage.loginType = 'Local';
@@ -59,7 +62,7 @@ class App extends Component {
 
   switchTo = (name) => {
     let localorcloud = this.state.localorcloudmap[name]
-    return this.setState({localorcloud});
+    return this.setState({ localorcloud });
   }
 
 
@@ -113,62 +116,62 @@ class App extends Component {
     return (
       <div className="Login">
         <Form onSubmit={this.handleSubmit}>
-          <div>
-          <Button variant="primary" onClick={() => this.switchTo(this.state.localorcloud)}>
-            Switch to {this.state.localorcloud}
-          </Button>
-          </div>
-         { (this.state.localorcloud === "Local") ? <>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Name</Form.Label>
-            <Form.Control value={this.state.name} onChange={e => this.changeState(e.target.value, 'name')} type="text" placeholder="Enter name" />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="text" value={this.state.password}
-              onChange={e => this.changeState(e.target.value, 'password')} placeholder="Password" />
-          </Form.Group>
-          <Button variant="primary" disabled={!this.validateForm()} type="submit">
-            Login
-          </Button>
-          </>:<>
+          {/* <div>
+            <Button variant="primary" onClick={() => this.switchTo(this.state.localorcloud)}>
+              Switch to {this.state.localorcloud}
+            </Button>
+          </div> */}
+          {(this.state.localorcloud === "Local") ? <>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Name</Form.Label>
+              <Form.Control value={this.state.name} onChange={e => this.changeState(e.target.value, 'name')} type="text" placeholder="Enter name" />
+            </Form.Group>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="text" value={this.state.password}
+                onChange={e => this.changeState(e.target.value, 'password')} placeholder="Password" />
+            </Form.Group>
+            <Button variant="primary" disabled={!this.validateForm()} type="submit">
+              Login
+            </Button>
+          </> : <>
 
-          { (this.state.loginorsignup) ? <>
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Name</Form.Label>
-            <Form.Control value={this.state.lname} onChange={e => this.changeState(e.target.value, 'lname')} type="text" placeholder="Enter name" />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="text" value={this.state.lpassword}
-              onChange={e => this.changeState(e.target.value, 'lpassword')} placeholder="Password" />
-          </Form.Group>
-          <Button variant="primary" onClick={() => this.localLogin()}>
-            Login
-          </Button>
+            {(this.state.loginorsignup) ? <>
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Name</Form.Label>
+                <Form.Control value={this.state.lname} onChange={e => this.changeState(e.target.value, 'lname')} type="text" placeholder="Enter name" />
+              </Form.Group>
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="text" value={this.state.lpassword}
+                  onChange={e => this.changeState(e.target.value, 'lpassword')} placeholder="Password" />
+              </Form.Group>
+              <Button variant="primary" onClick={() => this.localLogin()}>
+                Login
+              </Button>
 
-          <Button variant="primary"  onClick={() => this.switchToSignUp()}>
-            Sign Up/Create New Account
-          </Button>
-          </>:<>
-          
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Name</Form.Label>
-            <Form.Control value={this.state.lname} onChange={e => this.changeState(e.target.value, 'lname')} type="text" placeholder="Enter name" />
-          </Form.Group>
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="text" value={this.state.lpassword}
-              onChange={e => this.changeState(e.target.value, 'lpassword')} placeholder="Password" />
-          </Form.Group>
-          <Button variant="primary"  onClick={() => this.localSave()}>
-            Create
-          </Button>
-          <Button variant="primary" onClick={() => this.switchToSignUp()}>
-            Login
-          </Button>
-          </>
-  }
+              <Button variant="primary" onClick={() => this.switchToSignUp()}>
+                Sign Up/Create New Account
+              </Button>
+            </> : <>
+
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>Name</Form.Label>
+                <Form.Control value={this.state.lname} onChange={e => this.changeState(e.target.value, 'lname')} type="text" placeholder="Enter name" />
+              </Form.Group>
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="text" value={this.state.lpassword}
+                  onChange={e => this.changeState(e.target.value, 'lpassword')} placeholder="Password" />
+              </Form.Group>
+              <Button variant="primary" onClick={() => this.localSave()}>
+                Create and Login
+              </Button>
+              <Button variant="primary" onClick={() => this.localLogin()}>
+                Login
+              </Button>
+            </>
+            }
           </>
           }
         </Form>
